@@ -337,6 +337,8 @@
       }
     }
     tryPlay();
+    window.addEventListener("load", tryPlay, { once: true });
+    window.addEventListener("pageshow", tryPlay, { once: true });
     syncUi();
 
     function onFirstGesture() {
