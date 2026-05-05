@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gol — Typeface</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <audio
+      id="type-music"
+      src="TypeMusic.mp3"
+      loop
+      preload="auto"
+      playsinline
+    ></audio>
+    <div class="music-control" id="music-control">
+      <button
+        type="button"
+        id="music-toggle"
+        class="music-toggle"
+        aria-pressed="false"
+        aria-label="Play background music"
+      >
+        <svg class="music-icon music-icon-play" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M8 5v14l11-7z" />
+        </svg>
+        <svg class="music-icon music-icon-pause" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M6 5h4v14H6V5zm8 0h4v14h-4V5z" />
+        </svg>
+      </button>
+    </div>
+    <main class="page">
+      <header class="hero">
+        <div class="hero-marquee" aria-hidden="true">
+          <div class="hero-marquee-inner">
+            <span class="hero-marquee-seg"></span>
+            <span class="hero-marquee-seg"></span>
+          </div>
+        </div>
+        <div class="hero-content">
+          <p class="label">Typeface</p>
+          <h1 class="type-name" data-text="Gol">Gol<span class="type-name-sub">xp</span></h1>
+          <p class="tagline">Golxp - by Siddhant Kapadne</p>
+        </div>
+      </header>
+
+      <section class="block glyph-rows-block">
+        <div
+          id="glyph-rows"
+          class="glyph-rows"
+          aria-label="Uppercase alphabet, three rows"
+        ></div>
+      </section>
+
+      <section class="block glyph-specimen-block">
+        <h2 class="section-title">Glyph grid</h2>
+        <div class="glyph-browser" id="glyph-browser">
+          <div class="glyph-preview">
+            <span
+              class="glyph-preview-char"
+              id="glyph-preview-char"
+              aria-live="polite"
+              aria-atomic="true"
+            >A</span>
+          </div>
+          <div
+            id="glyph-grid"
+            class="glyph-grid"
+            role="group"
+            aria-label="Uppercase letters, select to preview"
+          ></div>
+        </div>
+      </section>
+
+      <section class="block interactive">
+        <div class="interactive-head">
+          <h2 class="section-title">Pattern</h2>
+          <p class="hint">Hover tiles — glyph scales with the pointer.</p>
+        </div>
+        <div
+          id="pattern"
+          class="pattern"
+          role="img"
+          data-char="O"
+          data-cols-wide="14"
+          data-cols-narrow="8"
+          data-rows-wide="10"
+          data-rows-narrow="12"
+          data-falloff="0.42"
+          data-base-rem="1.1"
+          data-max-rem="2.35"
+          data-max-scale="1.65"
+        ></div>
+      </section>
+
+      <section class="block wave-block" aria-label="Glyph wave animation">
+        <div class="wave-head">
+          <div class="wave-head-top">
+            <h2 class="section-title">Glyph wave</h2>
+            <button
+              type="button"
+              id="wave-track-btn"
+              class="wave-track-btn"
+              aria-label="Restart track from beginning"
+            >
+              <span class="wave-track-icon" aria-hidden="true">↻</span>
+            </button>
+          </div>
+          <p class="wave-hint">
+            O, K, R, E, L, A, X — twelve rows scroll and bounce with the background track.
+          </p>
+        </div>
+        <div class="wave-stage" id="wave-stage">
+          <canvas id="wave-canvas" aria-hidden="true"></canvas>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p class="footer-note">Gol.ttf</p>
+        <p class="footer-credit">
+          Created by Siddhant Kapadne.
+          <a
+            class="footer-link"
+            href="https://siddhant.website"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Check out design portfolio — siddhant.website</a>
+        </p>
+      </footer>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
