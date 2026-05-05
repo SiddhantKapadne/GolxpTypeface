@@ -18,7 +18,7 @@
       var src = ctx.createMediaElementSource(audio);
       var analyser = ctx.createAnalyser();
       analyser.fftSize = 1024;
-      analyser.smoothingTimeConstant = 0.72;
+      analyser.smoothingTimeConstant = 0.86;
       src.connect(analyser);
       analyser.connect(ctx.destination);
       musicGraph = {
@@ -391,6 +391,9 @@
       }
     })();
     var smooth = { bass: 0, mid: 0, high: 0, overall: 0 };
+    var smoothFlow = { bass: 0, mid: 0, high: 0, overall: 0 };
+    var prevBassSample = 0;
+    var beatPulse = 0;
 
     function seedRowOffsets() {
       var cell = 36;
@@ -439,26 +442,46 @@
         bands = { bass: 0, mid: 0, high: 0, overall: 0 };
       }
       var t = ts * 0.001;
-      var k = mqReduce.matches ? 0.14 : 0.24;
-      smooth.bass = smooth.bass * (1 - k) + bands.bass * k;
-      smooth.mid = smooth.mid * (1 - k) + bands.mid * k;
-      smooth.high = smooth.high * (1 - k) + bands.high * k;
-      smooth.overall = smooth.overall * (1 - k) + bands.overall * k;
+      var kFast = mqReduce.matches ? 0.09 : 0.11;
+      var kFlow = mqReduce.matches ? 0.028 : 0.034;
+      smooth.bass = smooth.bass * (1 - kFast) + bands.bass * kFast;
+      smooth.mid = smooth.mid * (1 - kFast) + bands.mid * kFast;
+      smooth.high = smooth.high * (1 - kFast) + bands.high * kFast;
+      smooth.overall = smooth.overall * (1 - kFast) + bands.overall * kFast;
+      smoothFlow.bass = smoothFlow.bass * (1 - kFlow) + bands.bass * kFlow;
+      smoothFlow.mid = smoothFlow.mid * (1 - kFlow) + bands.mid * kFlow;
+      smoothFlow.high = smoothFlow.high * (1 - kFlow) + bands.high * kFlow;
+      smoothFlow.overall =
+        smoothFlow.overall * (1 - kFlow) + bands.overall * kFlow;
 
-      var cellW = 32 + smooth.overall * 14;
-      var period = WAVE_LETTERS.length * cellW;
       var playing = audioEl && !audioEl.paused;
-      var runMul = playing ? 1 : 0.2;
-      if (mqReduce.matches) runMul *= 0.3;
-      var baseRun = mqReduce.matches ? 10 : 22;
-      var runSpeed =
-        (baseRun + smooth.mid * 560 + smooth.overall * 160 + smooth.bass * 140) *
-        runMul;
+      var bassDelta = Math.max(0, bands.bass - prevBassSample);
+      prevBassSample = prevBassSample * 0.72 + bands.bass * 0.28;
+      var offEnvelope = Math.max(0, bands.bass - smooth.bass);
+      var kick = Math.min(
+        1,
+        bassDelta * 3.2 + offEnvelope * 2.1 + Math.max(0, bands.mid - smooth.mid) * 0.85
+      );
+      beatPulse = beatPulse * (playing ? 0.86 : 0.9) + kick * (playing ? 0.34 : 0);
+      beatPulse = Math.min(1, beatPulse);
+
+      var cellW = 32 + smoothFlow.overall * 7 + beatPulse * 2;
+      var period = WAVE_LETTERS.length * cellW;
+      var runMul = playing ? 1 : 0.18;
+      if (mqReduce.matches) runMul *= 0.28;
+      var baseRun = mqReduce.matches ? 9 : 18;
+      var groove =
+        smoothFlow.mid * 195 +
+        smoothFlow.overall * 52 +
+        smoothFlow.bass * 72;
+      var pulseBoost = beatPulse * 108;
+      var runSpeed = (baseRun + groove + pulseBoost) * runMul;
 
       var r;
       for (r = 0; r < numRows; r++) {
         var rowBoost = 0.62 + r * 0.11;
-        scrollX[r] += rowDir[r] * runSpeed * rowBoost * dtSec;
+        var beatRow = 1 + beatPulse * 0.06 * (1 + r * 0.035);
+        scrollX[r] += rowDir[r] * runSpeed * rowBoost * beatRow * dtSec;
         scrollX[r] = ((scrollX[r] % period) + period) % period;
       }
 
@@ -469,7 +492,11 @@
       var innerH = H - padY * 2;
       var rowStep = innerH / numRows;
       var fontBase = Math.max(9, Math.min(20, rowStep * 0.46));
-      var fs = fontBase + smooth.bass * 16 + smooth.overall * 6;
+      var fs =
+        fontBase +
+        smoothFlow.bass * 5 +
+        smoothFlow.overall * 2.5 +
+        beatPulse * 5;
       ctx2d.font = "600 " + fs + "px Gol, system-ui, sans-serif";
       ctx2d.textAlign = "center";
       ctx2d.textBaseline = "middle";
@@ -484,17 +511,18 @@
           var wl = WAVE_LETTERS.length;
           var letter = WAVE_LETTERS[((c % wl) + wl) % wl];
           var x = c * cellW - off + cellW * 0.5;
-          var bounceMain =
-            Math.sin(t * (6.2 + r * 1.15) + c * 0.62) *
-            (4 + smooth.bass * 28);
-          var bounceHi =
-            Math.sin(t * (11 + smooth.high * 10) + c * 1.15 + r) *
-            (2.5 + smooth.high * 14);
-          var y = yCenter + bounceMain + bounceHi;
+          var sway =
+            Math.sin(t * (2.8 + smoothFlow.mid * 1.8) + c * 0.48 + r * 0.35) *
+            (2.2 + smoothFlow.bass * 9 + beatPulse * 10);
+          var ripple =
+            Math.sin(t * (5.5 + smoothFlow.high * 4) + c * 0.85 + r * 0.2) *
+            (1.1 + smoothFlow.high * 5 + beatPulse * 4.5);
+          var y = yCenter + sway + ripple;
           var squash =
             1 +
-            smooth.bass * 0.22 +
-            Math.abs(Math.sin(t * 9 + c * 0.4 + r)) * smooth.mid * 0.18;
+            smoothFlow.bass * 0.09 +
+            beatPulse * 0.11 +
+            Math.abs(Math.sin(t * 5.5 + c * 0.35 + r)) * smoothFlow.mid * 0.09;
           ctx2d.fillStyle = "#e4e4e4";
           ctx2d.save();
           ctx2d.translate(x, y);

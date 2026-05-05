@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style type="text/css">
+      @font-face {
+        font-family: "Gol";
+        src: url("Gol.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+      }
+      .glyph-o {
+        font-family: "Gol", Georgia, serif;
+        font-size: 46px;
+        font-weight: 400;
+        fill: #ff6600;
+      }
+    </style>
+  </defs>
+  <text
+    x="32"
+    y="32"
+    class="glyph-o"
+    text-anchor="middle"
+    dominant-baseline="central"
+  >O</text>
+</svg>
