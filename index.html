@@ -138,6 +138,45 @@
         </div>
       </section>
 
+      <section class="block type-canvas-block">
+        <div class="type-canvas-head">
+          <h2 class="section-title">Type it</h2>
+          <p class="hint">Write anything — download the canvas as an image.</p>
+        </div>
+        <label class="type-canvas-label" for="type-canvas-input">Enter your text here</label>
+        <textarea
+          id="type-canvas-input"
+          class="type-canvas-input"
+          rows="3"
+          maxlength="280"
+          placeholder="Type here…"
+          spellcheck="false"
+          autocomplete="off"
+        >Your text</textarea>
+        <div class="type-canvas-stage" id="type-canvas-stage">
+          <canvas
+            id="type-canvas"
+            aria-label="Preview of typed text in Golxp"
+          ></canvas>
+        </div>
+        <div class="type-canvas-actions">
+          <button
+            type="button"
+            id="type-canvas-download"
+            class="type-canvas-download"
+          >
+            Download image
+          </button>
+          <button
+            type="button"
+            id="type-canvas-reset"
+            class="type-canvas-reset"
+          >
+            Reset
+          </button>
+        </div>
+      </section>
+
       <section class="block interactive">
         <div class="interactive-head">
           <h2 class="section-title">Pattern</h2>

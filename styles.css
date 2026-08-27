@@ -326,6 +326,128 @@ body {
   opacity: 1;
 }
 
+.type-canvas-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.type-canvas-head .section-title {
+  margin-bottom: 0;
+}
+
+.type-canvas-label {
+  display: block;
+  margin: 0 0 0.45rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.type-canvas-input {
+  display: block;
+  width: 100%;
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: #fff;
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  resize: vertical;
+  min-height: 4.5rem;
+}
+
+.type-canvas-input::placeholder {
+  color: #b0b0ab;
+}
+
+.type-canvas-input:focus {
+  outline: none;
+  border-color: var(--interactive);
+  box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.18);
+}
+
+.type-canvas-stage {
+  position: relative;
+  width: 100%;
+  height: clamp(220px, 38vw, 340px);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+#type-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.type-canvas-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.type-canvas-download,
+.type-canvas-reset {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  padding: 0.65rem 1.15rem;
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.type-canvas-download {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #f7f7f5;
+}
+
+.type-canvas-download:hover {
+  background: var(--interactive);
+  border-color: var(--interactive);
+  color: #fff;
+}
+
+.type-canvas-reset {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--fg);
+}
+
+.type-canvas-reset:hover {
+  border-color: #d4d4d0;
+  background: var(--bg);
+}
+
+.type-canvas-download:focus,
+.type-canvas-reset:focus {
+  outline: none;
+}
+
+.type-canvas-download:focus-visible,
+.type-canvas-reset:focus-visible {
+  outline: 2px solid var(--interactive);
+  outline-offset: 2px;
+}
+
 .interactive {
   border-bottom: none;
 }
@@ -570,6 +692,14 @@ body {
 
   .glyph-grid-btn {
     font-size: clamp(0.9rem, 3.8vw, 1.1rem);
+  }
+
+  .type-canvas-stage {
+    height: clamp(180px, 52vw, 280px);
+  }
+
+  .type-canvas-input {
+    font-size: 1rem;
   }
 
   .wave-head-top .section-title {

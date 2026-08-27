@@ -556,6 +556,226 @@
     }
   }
 
+  function wrapCanvasLines(ctx, text, maxWidth) {
+    var paragraphs = String(text || "").replace(/\r\n/g, "\n").split("\n");
+    var lines = [];
+    var p;
+    for (p = 0; p < paragraphs.length; p++) {
+      var para = paragraphs[p];
+      if (!para.length) {
+        lines.push("");
+        continue;
+      }
+      var words = para.split(/\s+/);
+      var current = "";
+      var w;
+      for (w = 0; w < words.length; w++) {
+        var word = words[w];
+        var test = current ? current + " " + word : word;
+        if (ctx.measureText(test).width <= maxWidth) {
+          current = test;
+        } else {
+          if (current) lines.push(current);
+          if (ctx.measureText(word).width > maxWidth) {
+            var chunk = "";
+            var i;
+            for (i = 0; i < word.length; i++) {
+              var next = chunk + word[i];
+              if (ctx.measureText(next).width > maxWidth && chunk) {
+                lines.push(chunk);
+                chunk = word[i];
+              } else {
+                chunk = next;
+              }
+            }
+            current = chunk;
+          } else {
+            current = word;
+          }
+        }
+      }
+      if (current) lines.push(current);
+    }
+    return lines.length ? lines : [""];
+  }
+
+  function fitTypeCanvasFont(ctx, text, maxWidth, maxHeight, minSize, maxSize) {
+    var size = maxSize;
+    var lines = [""];
+    var lineHeight = 1.12;
+    while (size >= minSize) {
+      ctx.font = size + "px Gol, serif";
+      lines = wrapCanvasLines(ctx, text, maxWidth);
+      var h = lines.length * size * lineHeight;
+      var widest = 0;
+      var i;
+      for (i = 0; i < lines.length; i++) {
+        widest = Math.max(widest, ctx.measureText(lines[i]).width);
+      }
+      if (h <= maxHeight && widest <= maxWidth) break;
+      size -= 2;
+    }
+    return { size: Math.max(minSize, size), lines: lines, lineHeight: lineHeight };
+  }
+
+  function paintTypeCanvas(ctx, W, H, text, withWatermark) {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, W, H);
+
+    var padX = Math.max(22, W * 0.06);
+    var padY = Math.max(22, H * 0.08);
+    var display = text && String(text).trim() ? String(text) : "";
+
+    if (display) {
+      var watermarkReserve = withWatermark ? Math.max(36, H * 0.12) : 0;
+      var maxWidth = W - padX * 2;
+      var maxHeight = H - padY * 2 - watermarkReserve;
+      var fit = fitTypeCanvasFont(
+        ctx,
+        display,
+        maxWidth,
+        maxHeight,
+        18,
+        Math.min(96, Math.floor(H * 0.42))
+      );
+
+      ctx.fillStyle = "#0d0d0d";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = fit.size + "px Gol, serif";
+      var blockH = fit.lines.length * fit.size * fit.lineHeight;
+      var startY = padY + (maxHeight - blockH) / 2 + fit.size * fit.lineHeight * 0.5;
+      var i;
+      for (i = 0; i < fit.lines.length; i++) {
+        ctx.fillText(fit.lines[i], W / 2, startY + i * fit.size * fit.lineHeight);
+      }
+    }
+
+    if (withWatermark) {
+      var name = "Siddhant Kapadne";
+      var link = "siddhant.website";
+      var wmSize = Math.max(11, Math.min(14, Math.floor(W * 0.018)));
+      ctx.textAlign = "right";
+      ctx.textBaseline = "bottom";
+      ctx.fillStyle = "rgba(26, 26, 26, 0.42)";
+      ctx.font = "600 " + wmSize + "px system-ui, -apple-system, sans-serif";
+      ctx.fillText(name, W - padX, H - padY - wmSize * 1.35);
+      ctx.font = wmSize + "px system-ui, -apple-system, sans-serif";
+      ctx.fillText(link, W - padX, H - padY);
+    }
+  }
+
+  function setupTypeCanvas() {
+    var canvas = document.getElementById("type-canvas");
+    var input = document.getElementById("type-canvas-input");
+    var stage = document.getElementById("type-canvas-stage");
+    var downloadBtn = document.getElementById("type-canvas-download");
+    var resetBtn = document.getElementById("type-canvas-reset");
+    if (!canvas || !input || !stage) return;
+
+    var ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var lastW = -1;
+    var lastH = -1;
+
+    function currentText() {
+      return input.value;
+    }
+
+    function resizeAndDraw(withWatermark) {
+      var rect = stage.getBoundingClientRect();
+      var W = Math.max(200, Math.floor(rect.width));
+      var H = Math.max(160, Math.floor(rect.height));
+      if (W !== lastW || H !== lastH) {
+        lastW = W;
+        lastH = H;
+        canvas.width = Math.floor(W * dpr);
+        canvas.height = Math.floor(H * dpr);
+        canvas.style.width = W + "px";
+        canvas.style.height = H + "px";
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      paintTypeCanvas(ctx, W, H, currentText(), !!withWatermark);
+    }
+
+    function drawPreview() {
+      resizeAndDraw(false);
+    }
+
+    input.addEventListener("input", drawPreview);
+
+    if (typeof ResizeObserver !== "undefined") {
+      new ResizeObserver(drawPreview).observe(stage);
+    } else {
+      window.addEventListener("resize", drawPreview);
+    }
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(drawPreview);
+    } else {
+      drawPreview();
+    }
+
+    if (downloadBtn) {
+      downloadBtn.addEventListener("click", function () {
+        resizeAndDraw(true);
+        var exportCanvas = document.createElement("canvas");
+        exportCanvas.width = canvas.width;
+        exportCanvas.height = canvas.height;
+        var exportCtx = exportCanvas.getContext("2d");
+        if (!exportCtx) {
+          drawPreview();
+          return;
+        }
+        exportCtx.drawImage(canvas, 0, 0);
+        drawPreview();
+
+        function failAlert() {
+          window.alert("Could not download the image. Try again.");
+        }
+
+        if (exportCanvas.toBlob) {
+          exportCanvas.toBlob(function (blob) {
+            if (!blob) {
+              failAlert();
+              return;
+            }
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = "golxp-type.png";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(function () {
+              URL.revokeObjectURL(url);
+            }, 1500);
+          }, "image/png");
+        } else {
+          try {
+            var a = document.createElement("a");
+            a.href = exportCanvas.toDataURL("image/png");
+            a.download = "golxp-type.png";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          } catch (err) {
+            failAlert();
+          }
+        }
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        input.value = "";
+        drawPreview();
+        input.focus();
+      });
+    }
+  }
+
   function fillHeroMarquee() {
     var phrase = "quick brown fox";
     var gap = "      ";
@@ -581,6 +801,7 @@
     var waveCanvas = document.getElementById("wave-canvas");
     var musicEl = document.getElementById("type-music");
     if (waveCanvas) setupGlyphWave(waveCanvas, musicEl);
+    setupTypeCanvas();
   }
 
   document.addEventListener("DOMContentLoaded", initInteractions);

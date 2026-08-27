@@ -1,0 +1,505 @@
+@font-face {
+  font-family: "Gol";
+  src: url("Gol.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg: #f7f7f5;
+  --fg: #1a1a1a;
+  --muted: #6b6b6b;
+  --line: #e2e2de;
+  --accent: #0d0d0d;
+  --interactive: #ff6600;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.plx-body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  overflow-x: hidden;
+}
+
+.plx-back {
+  position: fixed;
+  top: max(0.65rem, env(safe-area-inset-top, 0px));
+  left: max(0.75rem, env(safe-area-inset-left, 0px));
+  z-index: 100;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  color: var(--muted);
+  background: rgba(247, 247, 245, 0.9);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+
+.plx-back:hover {
+  color: var(--fg);
+}
+
+.plx-main {
+  position: relative;
+}
+
+.plx-section {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(3rem, 10vh, 6rem) clamp(1.25rem, 5vw, 3rem);
+  overflow: hidden;
+}
+
+.plx-section + .plx-section {
+  border-top: 1px solid var(--line);
+}
+
+[data-parallax] {
+  will-change: transform;
+}
+
+/* Hero */
+.plx-hero {
+  min-height: 110vh;
+  min-height: 110svh;
+}
+
+.plx-hero-field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.plx-hero-core {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.plx-depth {
+  position: absolute;
+  font-family: "Gol", serif;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.06;
+  user-select: none;
+}
+
+.plx-depth-g {
+  top: 8%;
+  left: -4%;
+  font-size: clamp(8rem, 38vw, 22rem);
+}
+
+.plx-depth-o {
+  top: 42%;
+  right: -6%;
+  font-size: clamp(7rem, 34vw, 20rem);
+}
+
+.plx-depth-l {
+  bottom: 6%;
+  left: 18%;
+  font-size: clamp(6rem, 28vw, 16rem);
+}
+
+.plx-depth-xp {
+  top: 14%;
+  right: 12%;
+  font-size: clamp(3rem, 14vw, 8rem);
+  opacity: 0.08;
+}
+
+.plx-hero-strip {
+  position: absolute;
+  left: 50%;
+  width: 120vw;
+  margin: 0;
+  font-family: "Gol", serif;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--accent);
+  opacity: 0.14;
+  transform: translateX(-50%);
+  letter-spacing: 0.12em;
+  word-spacing: 0.35em;
+}
+
+.plx-hero-strip--top {
+  top: 10%;
+  font-size: clamp(1.25rem, 3.8vw, 2.5rem);
+}
+
+.plx-hero-strip--bottom {
+  bottom: 12%;
+  font-size: clamp(1rem, 3vw, 2rem);
+  opacity: 0.1;
+  color: var(--muted);
+}
+
+.plx-hero-side {
+  position: absolute;
+  font-family: "Gol", serif;
+  font-weight: 400;
+  font-size: clamp(1.75rem, 5vw, 3.25rem);
+  letter-spacing: 0.28em;
+  color: #d4d4d4;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  user-select: none;
+}
+
+.plx-hero-side--left {
+  top: 50%;
+  left: clamp(0.5rem, 3vw, 2rem);
+}
+
+.plx-hero-side--right {
+  top: 50%;
+  right: clamp(0.5rem, 3vw, 2rem);
+}
+
+.plx-label {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.plx-title {
+  margin: 0;
+  font-family: "Gol", serif;
+  line-height: 0.92;
+  color: var(--accent);
+}
+
+.plx-title-main {
+  display: inline-block;
+  font-size: clamp(4.5rem, 22vw, 11rem);
+  font-weight: 400;
+}
+
+.plx-title-sub {
+  display: inline-block;
+  font-size: clamp(2.25rem, 11vw, 5.5rem);
+  font-weight: 400;
+}
+
+.plx-sub {
+  margin: 1.25rem 0 0;
+  font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+  color: var(--muted);
+}
+
+.plx-float {
+  position: absolute;
+  font-family: "Gol", serif;
+  font-weight: 400;
+  color: #e2e2e2;
+  user-select: none;
+  pointer-events: none;
+}
+
+.plx-float-a {
+  top: 18%;
+  left: 8%;
+  font-size: clamp(3rem, 12vw, 7rem);
+}
+
+.plx-float-b {
+  top: 62%;
+  right: 10%;
+  font-size: clamp(2.5rem, 10vw, 6rem);
+  color: #d8d8d8;
+}
+
+.plx-float-c {
+  bottom: 22%;
+  left: 14%;
+  font-size: clamp(2rem, 8vw, 4.5rem);
+}
+
+.plx-float-d {
+  top: 28%;
+  right: 18%;
+  font-size: clamp(3.5rem, 14vw, 8rem);
+  color: var(--interactive);
+  opacity: 0.35;
+}
+
+.plx-float-e {
+  bottom: 38%;
+  right: 6%;
+  font-size: clamp(2.75rem, 11vw, 6rem);
+  color: #dcdcdc;
+}
+
+.plx-float-f {
+  top: 72%;
+  left: 28%;
+  font-size: clamp(2.25rem, 9vw, 5rem);
+  opacity: 0.7;
+}
+
+.plx-float-g {
+  bottom: 8%;
+  right: 22%;
+  font-size: clamp(3rem, 12vw, 6.5rem);
+  color: var(--accent);
+  opacity: 0.22;
+}
+
+.plx-float-h {
+  top: 44%;
+  left: 4%;
+  font-size: clamp(4rem, 16vw, 9rem);
+  color: #ebebeb;
+}
+
+.plx-float-i {
+  bottom: 48%;
+  left: 42%;
+  font-size: clamp(1.75rem, 7vw, 4rem);
+  color: var(--interactive);
+  opacity: 0.28;
+}
+
+.plx-float-j {
+  top: 8%;
+  left: 38%;
+  font-size: clamp(1.5rem, 5.5vw, 3.25rem);
+  color: var(--muted);
+  opacity: 0.55;
+}
+
+.plx-float-k {
+  top: 52%;
+  right: 4%;
+  font-size: clamp(2rem, 8vw, 4.75rem);
+  color: var(--accent);
+  opacity: 0.18;
+}
+
+.plx-float-l {
+  bottom: 16%;
+  right: 38%;
+  font-size: clamp(2.5rem, 10vw, 5.5rem);
+  color: #d0d0d0;
+}
+
+/* Alphabet layers */
+.plx-section-title {
+  margin: 0 0 2rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.plx-letter-layer {
+  width: 100%;
+  max-width: 56rem;
+  margin: 0.65rem 0;
+  font-family: "Gol", serif;
+  text-align: center;
+  line-height: 1.35;
+  color: var(--accent);
+  word-spacing: 0.35em;
+}
+
+.plx-letter-layer--slow {
+  font-size: clamp(1.5rem, 4.5vw, 2.75rem);
+  opacity: 0.45;
+}
+
+.plx-letter-layer--mid {
+  font-size: clamp(2rem, 6vw, 3.75rem);
+  opacity: 0.72;
+}
+
+.plx-letter-layer--fast {
+  font-size: clamp(1.25rem, 3.5vw, 2.25rem);
+  opacity: 0.55;
+  color: var(--muted);
+}
+
+/* Phrase */
+.plx-phrase {
+  min-height: 120vh;
+  min-height: 120svh;
+  align-items: flex-start;
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.plx-phrase-line {
+  margin: 0.15em 0;
+  font-family: "Gol", serif;
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--accent);
+}
+
+.plx-phrase-1 {
+  font-size: clamp(2.25rem, 9vw, 5.5rem);
+  align-self: flex-start;
+}
+
+.plx-phrase-2 {
+  font-size: clamp(2.75rem, 11vw, 6.75rem);
+  align-self: center;
+  color: var(--muted);
+}
+
+.plx-phrase-3 {
+  font-size: clamp(2rem, 8vw, 5rem);
+  align-self: flex-end;
+}
+
+.plx-phrase-4 {
+  font-size: clamp(3rem, 12vw, 7.5rem);
+  align-self: center;
+}
+
+/* Mosaic */
+.plx-mosaic {
+  min-height: 130vh;
+  min-height: 130svh;
+}
+
+.plx-mosaic-grid {
+  position: relative;
+  width: min(100%, 42rem);
+  height: min(70vh, 32rem);
+}
+
+.plx-mosaic-cell {
+  position: absolute;
+  font-family: "Gol", serif;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--accent);
+  user-select: none;
+}
+
+.plx-mosaic-cell:nth-child(3n) {
+  color: var(--interactive);
+  opacity: 0.55;
+}
+
+.plx-mosaic-cell:nth-child(5n) {
+  color: #c8c8c8;
+}
+
+/* Closer */
+.plx-closer {
+  min-height: 90vh;
+  min-height: 90svh;
+  padding-bottom: 4rem;
+}
+
+.plx-closer-line {
+  margin: 0;
+  font-family: "Gol", serif;
+  font-size: clamp(3.5rem, 14vw, 8rem);
+  line-height: 1;
+  color: var(--accent);
+}
+
+.plx-closer-credit {
+  margin: 1rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.plx-closer-link {
+  margin-top: 1.75rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  color: var(--fg);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.15rem;
+}
+
+.plx-closer-link:hover {
+  color: var(--interactive);
+  border-color: var(--interactive);
+}
+
+@media (max-width: 720px) {
+  .plx-depth-xp,
+  .plx-hero-side,
+  .plx-float-j,
+  .plx-float-k,
+  .plx-float-l {
+    display: none;
+  }
+
+  .plx-hero-strip {
+    width: 140vw;
+    letter-spacing: 0.06em;
+    word-spacing: 0.15em;
+  }
+
+  .plx-hero-strip--top {
+    font-size: clamp(0.875rem, 3.2vw, 1.25rem);
+  }
+
+  .plx-hero-strip--bottom {
+    font-size: clamp(0.75rem, 2.8vw, 1rem);
+  }
+
+  .plx-float {
+    opacity: 0.85;
+  }
+
+  .plx-letter-layer {
+    word-spacing: 0.15em;
+    line-height: 1.5;
+  }
+
+  .plx-phrase-line {
+    align-self: center !important;
+    text-align: center;
+    width: 100%;
+  }
+
+  .plx-mosaic-grid {
+    height: min(55vh, 22rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  [data-parallax] {
+    transform: none !important;
+    will-change: auto;
+  }
+}
